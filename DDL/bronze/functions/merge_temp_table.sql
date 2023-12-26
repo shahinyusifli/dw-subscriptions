@@ -4,7 +4,7 @@ $$
 BEGIN
     EXECUTE '
         MERGE INTO bronze.subscriptions  
-        USING bronze.temp_table_113 tt ON 	
+        USING bronze.temp_table_bronze tt ON 	
                 cast(subscriptions.id as int) = tt.id
             WHEN MATCHED THEN 
                 UPDATE SET 
