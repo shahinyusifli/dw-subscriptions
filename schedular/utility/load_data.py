@@ -1,4 +1,3 @@
-import pandas as pd
 from utility.execute_query import QueryExecutor
 
 class DataLoader:
@@ -23,7 +22,7 @@ class DataLoader:
         """
         # Initialize a QueryExecutor to manage database queries
         query_executer = QueryExecutor()
-
+        sql_query = open('sql/call_func_merge_tmp_to_bronze.sql').read()
         # Create a connection and cursor for executing SQL queries
         conn = query_executer.create_cursor_connection()
         curr = conn.cursor()
@@ -33,7 +32,7 @@ class DataLoader:
             data.to_sql("temp_table_bronze", schema='bronze', if_exists='append', index=False, con=self.dw_engine)
 
             # Execute a SQL query to merge the temporary table into the 'subscriptions' table
-            curr.execute("SELECT bronze.merge_temp_table_into_subscriptions()")
+            curr.execute(sql_query)
 
             # Commit changes to the database and close the cursor and connection
             conn.commit()
