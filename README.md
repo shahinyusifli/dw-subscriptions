@@ -10,7 +10,7 @@ Data undergoes transformation in the Silver Stage, involving type casting and da
 Transformed data within the data warehouse is modeled into a Kimball-style star schema in the Gold Stage. In this stage, the account dimension and Sales fact table ensure data historization up to Slowly Changing Dimension Type 1. The "Never Process Fact" approach is applied to the transactional sales fact table for Later Arriving Dimensions. This fact table provides detailed information about sales events over time. The Calendar dimension serves as a Role-playing dimension, referenced multiple times by the fact table. The Account dimension can be utilized as a Conformed dimension when needed. Possible consumers of the Gold Stage include quarterly Business Intelligence applications and ad hoc queries.
 
 
-![alt text](https://github.com/shahinyusifli/dw-subscriptions/document/architecture.png)
+![alt text](https://github.com/shahinyusifli/dw-subscriptions/blob/main/document/architecture.png)
 
 
 ### Setup
@@ -42,7 +42,7 @@ You can use these scripts for deploiyng flows to Prefect Cloud. Mentioned stpes 
 
 We can see the pipelines below illustration which are scheduled according presented order.
 
-![alt text](https://github.com/shahinyusifli/dw-subscriptions/document/prefect-dasboard.png)
+![alt text](https://github.com/shahinyusifli/dw-subscriptions/blob/main/document/prefect-dasboard.png)
 
 #### Data Extraction
 Data extraction takes snapshots of data daily. The daily snapshot contains inserted and updated data. 
