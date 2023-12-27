@@ -13,26 +13,13 @@ Transformed data within the data warehouse is modeled into a Kimball-style star 
 ![alt text](https://github.com/shahinyusifli/dw-subscriptions/blob/main/document/architecture.png)
 
 
-### Setup
-First of all, all necessary libraries should be installed. For this purpose, you should create a virtual environment and install the needed libraries.
-
-```bash
-  $ python -m venv venv
-  $ venv\Scripts\activate
-  $ pip install -r requirements.txt
-```
-For setting up source and data warehouse with all needed tables and functions. I'd like to let you know that scripts can be executed. But before you go ahead, please create a Postgres user and change the credentials of inside the provided scripts. 
-```bash
-  $ python setup_db.py
-  $ python setdw_dw.py
-```
 ### Data Pipelines
 Prefect is used for monitoring and scheduling pipelines. Delay between pipelines is 15 minutes. For running metioned pipeles, you should login [Prefect Cloud](https://www.prefect.io/cloud) and you should run this script for creating connection:
 ```bash
   $ cd .\schedular\
   $ prefect cloud login
 ```
-After creating a connection between local and cloud environments. You can use a script or UI for running pipelines. They are scheduled for each day but they can be triggered manually.
+After creating a connection between local and cloud environments, you should edit blocks that contain credentials of the data warehouse and transactional database. You can use a script or UI for running pipelines. They are scheduled for each day but they can be triggered manually.
 You can use these scripts for deploiyng flows to Prefect Cloud. Mentioned stpes should be done for each pipeline/flow. Scripts:
 ```bash
   $ cd .\scheduler\ 
@@ -65,6 +52,20 @@ Listed pipelines are used for this purpose:
 - to_dim_device_flow
 - to_dim_subscription
 - to_fct_sales_flow
+
+### Setup
+First of all, all necessary libraries should be installed. For this purpose, you should create a virtual environment and install the needed libraries.
+
+```bash
+  $ python -m venv venv
+  $ venv\Scripts\activate
+  $ pip install -r requirements.txt
+```
+For setting up source and data warehouse with all needed tables and functions. I'd like to let you know that scripts can be executed. But before you go ahead, please create a Postgres user and change the credentials of inside the provided scripts. 
+```bash
+  $ python setup_db.py
+  $ python setdw_dw.py
+```
 
 ## Data Glossary
 
