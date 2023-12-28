@@ -212,13 +212,13 @@ CREATE table gold.dim_calendar (
 );
 
 CREATE TABLE gold.dim_device (
-	sk serial4,
+	sk smallserial,
 	device varchar(50) NULL,
 	CONSTRAINT device_dimension_pkey PRIMARY KEY (sk)
 );
 
 CREATE TABLE gold.dim_device (
-	sk serial4,
+	sk smallserial,
 	device varchar(50) NULL,
 	CONSTRAINT device_dimension_pkey PRIMARY KEY (sk)
 );
