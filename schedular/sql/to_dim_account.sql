@@ -1,3 +1,5 @@
+BEGIN;
+
 merge into gold.dim_account gdc
 using (select * from silver.subscriptions where is_valid=True) ss
 on gdc.id = ss.id 
@@ -11,3 +13,7 @@ when matched then
     when not matched then
         insert (id, join_date, age, gender, country)
         values (ss.id, ss.join_date, ss.age, ss.gender, ss.country);
+
+CLUSTER gold.dim_account;
+
+COMMIT;

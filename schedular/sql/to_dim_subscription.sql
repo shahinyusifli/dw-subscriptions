@@ -1,3 +1,5 @@
+BEGIN;
+
 WITH extracted_subscriptions AS (
         SELECT DISTINCT subscription_type,
                         plan_duration
@@ -13,3 +15,8 @@ LEFT JOIN  gold.dim_subscription sd
     ON es.subscription_type = sd.subscription_type
     AND es.plan_duration = sd.plan_duration
 WHERE sd.subscription_type IS NULL; 
+
+
+CLUSTER gold.dim_subscription;
+
+COMMIT;
