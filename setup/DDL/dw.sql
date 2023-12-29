@@ -198,6 +198,9 @@ CREATE TABLE gold.dim_account (
 	CONSTRAINT user_dimension_pkey PRIMARY KEY (id)
 );
 
+CREATE INDEX cls_idx_id_account ON gold.dim_account (sk);
+CLUSTER gold.dim_account USING cls_idx_id_account;
+
 CREATE table gold.dim_calendar (
 	id date NOT NULL,
 	"day" int4 NULL,
@@ -217,11 +220,18 @@ CREATE TABLE gold.dim_device (
 	CONSTRAINT device_dimension_pkey PRIMARY KEY (sk)
 );
 
-CREATE TABLE gold.dim_device (
+CREATE INDEX cls_idx_sk_device ON gold.dim_device (sk);
+CLUSTER gold.dim_device USING cls_idx_sk_device;
+
+CREATE TABLE gold.dim_subscription (
 	sk smallserial,
-	device varchar(50) NULL,
-	CONSTRAINT device_dimension_pkey PRIMARY KEY (sk)
+	subscription_type varchar(255) NULL,
+	plan_duration int4 null,
+	CONSTRAINT subscription_dimension_pkey PRIMARY KEY (sk)
 );
+
+CREATE INDEX cls_idx_sk_subs ON gold.dim_subscription (sk);
+CLUSTER gold.dim_subscription USING cls_idx_sk_subs;
 
 CREATE TABLE gold.fct_sales (
 	sk serial4,
