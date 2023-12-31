@@ -61,10 +61,13 @@ First of all, all necessary libraries should be installed. For this purpose, you
   $ venv\Scripts\activate
   $ pip install -r requirements.txt
 ```
-For setting up source and data warehouse with all needed tables and functions. I'd like to let you know that scripts can be executed. But before you go ahead, please create a Postgres user and change the credentials of inside the provided scripts. 
+You can use Docker Compose to set up both the source and data warehouse environments, complete with all the necessary tables and functions.
+
 ```bash
-  $ python setup_db.py
-  $ python setdw_dw.py
+  $ docker pull bitnami/postgresql:latest
+  $ docker pull adminer:latest
+  $ cd .\setup\
+  $ docker-compose up -d
 ```
 
 ## Data Glossary

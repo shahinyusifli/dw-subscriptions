@@ -15,7 +15,7 @@ SELECT
 	movies_watched,
 	series_watched
 FROM subscriptions
-WHERE created_date >= DATETIME('now', '-1 days')  and modified_date is NULL
+WHERE created_date >= CURRENT_TIMESTAMP - INTERVAL '1 day' and modified_date is NULL
 UNION
 SELECT 
 	id,
@@ -34,6 +34,6 @@ SELECT
 	movies_watched,
 	series_watched
 FROM subscriptions
-WHERE modified_date >= DATETIME('now', '-1 days');
+WHERE modified_date >= CURRENT_TIMESTAMP - INTERVAL '1 day';
 
 

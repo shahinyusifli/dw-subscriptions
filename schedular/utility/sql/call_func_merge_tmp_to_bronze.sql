@@ -1,1 +1,1 @@
-SELECT bronze.merge_temp_table_into_subscriptions()
+SELECT bronze.merge_temp_table_into_subscriptions();

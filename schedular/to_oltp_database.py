@@ -4,10 +4,9 @@ from prefect.blocks.system import JSON
 from connection.connect_to_db import DatabaseConnector
 from utility.generate_data import  DataGenerator
 
-sqlite_credential = JSON.load("sqlite")
-db_path = sqlite_credential.value["url"]
-db_url = f"sqlite:///{db_path}"
-connector = DatabaseConnector(db_url)
+db_credential = JSON.load("db-postgres")
+db_path = db_credential.value["url"]
+connector = DatabaseConnector(db_path)
 data_generator = DataGenerator()
 
 @task

@@ -28,7 +28,7 @@ CREATE INDEX idx_inserted_date ON bronze.subscriptions (inserted_date);
 CLUSTER bronze.subscriptions USING idx_inserted_date;
 
 
-CREATE OR REPLACE FUNCTION merge_temp_table_into_subscriptions()
+CREATE OR REPLACE FUNCTION bronze.merge_temp_table_into_subscriptions()
 RETURNS VOID AS
 $$
 BEGIN
@@ -96,7 +96,11 @@ CREATE TABLE silver.subscriptions (
     is_valid BOOLEAN default TRUE
 );
 
-CREATE OR REPLACE FUNCTION handle_subscription_changes()
+CREATE PUBLICATION silver_publication FOR TABLE silver.subscriptions;
+
+SELECT pg_create_logical_replication_slot('silver_pub_slot', 'pgoutput');
+
+CREATE OR REPLACE FUNCTION silver.handle_subscription_changes()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' then
@@ -179,9 +183,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 CREATE or replace TRIGGER subscription_changes_trigger
 AFTER INSERT OR UPDATE ON bronze.subscriptions
-FOR EACH ROW EXECUTE FUNCTION handle_subscription_changes();
+FOR EACH ROW EXECUTE FUNCTION silver.handle_subscription_changes();
 
 -- ===========================================GOLD================================================
 
@@ -198,7 +203,7 @@ CREATE TABLE gold.dim_account (
 	CONSTRAINT user_dimension_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX cls_idx_id_account ON gold.dim_account (sk);
+CREATE INDEX cls_idx_id_account ON gold.dim_account (id);
 CLUSTER gold.dim_account USING cls_idx_id_account;
 
 CREATE table gold.dim_calendar (
@@ -255,3 +260,41 @@ ALTER TABLE gold.fct_sales ADD CONSTRAINT fk_date_cancel_date FOREIGN KEY (cance
 ALTER TABLE gold.fct_sales ADD CONSTRAINT fk_device FOREIGN KEY (device_sk) REFERENCES gold.dim_device(sk);
 ALTER TABLE gold.fct_sales ADD CONSTRAINT fk_subscription FOREIGN KEY (subscription_sk) REFERENCES gold.dim_subscription(sk);
 ALTER TABLE gold.fct_sales ADD CONSTRAINT fk_user FOREIGN KEY (account_id) REFERENCES gold.dim_account(id);
+
+
+CREATE OR REPLACE FUNCTION gold.map_to_device(device_name text)
+RETURNS integer AS $$
+DECLARE
+    device_sk integer;
+BEGIN
+    SELECT sk INTO device_sk
+    FROM gold.dim_device
+    WHERE device = device_name;
+
+    RETURN device_sk;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION gold.map_to_subscription(
+    p_subscription_type varchar(255),
+    p_plan_duration int
+) RETURNS integer AS
+$$
+DECLARE
+    subscription_sk integer;
+BEGIN
+    SELECT sk INTO subscription_sk
+    FROM gold.dim_subscription
+    WHERE
+        subscription_type = p_subscription_type
+        AND plan_duration = p_plan_duration;
+
+    RETURN subscription_sk;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;

@@ -5,14 +5,13 @@ from utility.extract_data import DataExtractor
 from utility.load_data import DataLoader
 
 # Load credentials and SQL query from Prefect JSON blocks and files
-sqlite_credential = JSON.load("sqlite")
+db_credential = JSON.load("db-postgres")
 dw_credential = JSON.load("dw-postgres")
 sql_query = open('sql/to_bronze.sql').read()
 
 # Extract SQLite credentials and create a connection to SQLite database
-db_path = sqlite_credential.value["url"]
-db_url = f"sqlite:///{db_path}"
-db_connector = DatabaseConnector(db_url)
+db_path = db_credential.value["url"]
+db_connector = DatabaseConnector(db_path)
 db_engine = db_connector.create_engine()
 
 # Extract Data Warehouse (DW) credentials and create a connection to DW database (PostgreSQL)

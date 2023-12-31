@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  postgresql-dw:
+    image: 'docker.io/bitnami/postgresql:latest'
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-dw-data:/var/lib/postgresql/data
+      - ./DDL/init_dw.sql:/docker-entrypoint-initdb.d/init_dw.sql
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=subscription
+      - POSTGRESQL_PASSWORD=password
+
+  postgresql-otlp:
+    image: 'docker.io/bitnami/postgresql:latest'
+    ports:
+      - '5434:5432'
+    volumes:
+      - postgres-otlp-data:/var/lib/postgresql/data
+      - ./DDL/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    environment:
+      - POSTGRESQL_PGAUDIT_LOG=READ,WRITE
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=subscription
+      - POSTGRESQL_PASSWORD=password
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - postgresql-dw
+      - postgresql-otlp
+    ports:
+      - 8080:8080
+
+volumes:
+  postgres-dw-data:
+  postgres-otlp-data:
